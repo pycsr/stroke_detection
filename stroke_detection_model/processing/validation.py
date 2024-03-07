@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -18,14 +19,14 @@ from stroke_detection_model.processing.data_manager import pre_pipeline_preparat
 def validate_inputs(*, input_df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[dict]]:
     """Check model inputs for unprocessable values."""
 
-    pre_processed = pre_pipeline_preparation(data_frame = input_df)
+    pre_processed = pre_pipeline_preparation(data_frame=input_df)
     validated_data = pre_processed[config.model_config.features].copy()
     errors = None
 
     try:
         # replace numpy nans so that pydantic can validate
         MultipleDataInputs(
-            inputs = validated_data.replace({np.nan: None}).to_dict(orient="records")
+            inputs=validated_data.replace({np.nan: None}).to_dict(orient="records")
         )
     except ValidationError as error:
         errors = error.json()
@@ -34,19 +35,16 @@ def validate_inputs(*, input_df: pd.DataFrame) -> Tuple[pd.DataFrame, Optional[d
 
 
 class DataInputSchema(BaseModel):
-    dteday: Optional[Union[str, datetime]]
-    season: Optional[str]
-    hr: Optional[str]
+    gender: Optional[str]
+    age: Optional[float]
     holiday: Optional[str]
-    weekday: Optional[str]
-    workingday: Optional[str]
-    weathersit: Optional[str]
-    temp: Optional[float]
-    atemp: Optional[float]
-    hum: Optional[float]
-    windspeed: Optional[float]
-    yr: Optional[int]
-    mnth: Optional[str]
+    hypertension: Optional[int]
+    ever_married: Optional[str]
+    work_type: Optional[str]
+    Residence_type: Optional[str]
+    avg_glucose_level: Optional[float]
+    bmi: Optional[float]
+    smoking_status: Optional[str]
 
 
 class MultipleDataInputs(BaseModel):

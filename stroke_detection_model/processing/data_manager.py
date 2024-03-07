@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -22,26 +23,25 @@ from stroke_detection_model.config.core import DATASET_DIR, TRAINED_MODEL_DIR, c
 def get_year_and_month(dataframe: pd.DataFrame, date_var: str):
 
     df = dataframe.copy()
-    
-    # convert 'dteday' column to Datetime datatype
-    df[date_var] = pd.to_datetime(df[date_var], format='%Y-%m-%d')
-    
-    # Add new features 'yr' and 'mnth
-    df['yr'] = df[date_var].dt.year
-    df['mnth'] = df[date_var].dt.month_name()
-    
-    return df
 
+    # # convert 'dteday' column to Datetime datatype
+    # df[date_var] = pd.to_datetime(df[date_var], format='%Y-%m-%d')
+
+    # # Add new features 'yr' and 'mnth
+    # df['yr'] = df[date_var].dt.year
+    # df['mnth'] = df[date_var].dt.month_name()
+
+    return df
 
 
 def pre_pipeline_preparation(*, data_frame: pd.DataFrame) -> pd.DataFrame:
 
-    data_frame = get_year_and_month(dataframe = data_frame, date_var = config.model_config.date_var)
-    
-    # Drop unnecessary fields
-    for field in config.model_config.unused_fields:
-        if field in data_frame.columns:
-            data_frame.drop(labels = field, axis=1, inplace=True)    
+    data_frame = data_frame#get_year_and_month(dataframe = data_frame, date_var = config.model_config.date_var)
+
+    # # Drop unnecessary fields
+    # for field in config.model_config.unused_fields:
+    #     if field in data_frame.columns:
+    #         data_frame.drop(labels = field, axis=1, inplace=True)
 
     return data_frame
 
@@ -50,17 +50,18 @@ def _load_raw_dataset(*, file_name: str) -> pd.DataFrame:
     dataframe = pd.read_csv(Path(f"{DATASET_DIR}/{file_name}"))
     return dataframe
 
+
 def load_dataset(*, file_name: str) -> pd.DataFrame:
     dataframe = pd.read_csv(Path(f"{DATASET_DIR}/{file_name}"))
-    transformed = pre_pipeline_preparation(data_frame = dataframe)
+    # transformed = pre_pipeline_preparation(data_frame = dataframe)
 
-    return transformed
+    return dataframe
 
 
 def save_pipeline(*, pipeline_to_persist: Pipeline) -> None:
     """Persist the pipeline.
-    Saves the versioned model, and overwrites any previous saved models. 
-    This ensures that when the package is published, there is only one trained model that 
+    Saves the versioned model, and overwrites any previous saved models.
+    This ensures that when the package is published, there is only one trained model that
     can be called, and we know exactly how it was built.
     """
 
@@ -83,7 +84,7 @@ def load_pipeline(*, file_name: str) -> Pipeline:
 def remove_old_pipelines(*, files_to_keep: t.List[str]) -> None:
     """
     Remove old model pipelines.
-    This is to ensure there is a simple one-to-one mapping between the package version and 
+    This is to ensure there is a simple one-to-one mapping between the package version and
     the model version to be imported and used by other applications.
     """
     do_not_delete = files_to_keep + ["__init__.py"]

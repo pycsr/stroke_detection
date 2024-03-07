@@ -1,121 +1,74 @@
 # Package Overview
 package_name: stroke_detection_model
 
-# Data Files
+# # Data Files
 training_data_file: healthcare-dataset-stroke-data.csv
 
-# Variables
-# The variable we are attempting to predict (cnt)
-target: cnt
+# # Variables
+# # The variable we are attempting to predict (stroke)
+target: stroke
 
 pipeline_name: stroke_detection_model
 pipeline_save_file: stroke_detection_model_output_v
 
-# Features that will go inside processing pipeline
+# # Features that will go inside processing pipeline
 features:
-  - dteday
-  - season
-  - hr
-  - holiday
-  - weekday
-  - workingday
-  - weathersit
-  - temp
-  - atemp
-  - hum
-  - windspeed
-  - yr            # generated from dteday colum <--Before pipeline alongwith loading the data
-  - mnth          # generated from dteday colum <--Before pipeline alongwith loading the data
-
+  - gender
+  - age
+  - hypertension
+  - heart_disease
+  - ever_married
+  - work_type
+  - Residence_type
+  - avg_glucose_level
+  - bmi
+  - smoking_status
 
 unused_fields:  # Features to drop before pipeline
-  - casual
-  - registered
+  - id
 
+# # Features inside processing pipeline
+# bmiimputer_var: bmi 
 
-# Features names
+# # Features names
 
-date_var: dteday
-yr_var: yr
-mnth_var: mnth
-season_var: season
-hr_var: hr
-holiday_var: holiday
-workingday_var: workingday
-weekday_var: weekday
-weathersit_var: weathersit
-temp_var: temp
-atemp_var: atemp
-hum_var: hum
-windspeed_var: windspeed
+gender_var: gender
+gender_mappings: 
+  Male: 0
+  Female: 1
+  Other: 2
 
+age_var: age
+hypertension_var: hypertension
+heart_disease_var: heart_disease
 
-# Mappings for Ordinal categorical features
-
-yr_mappings: 
-  2011: 0
-  2012: 1
-
-mnth_mappings:
-  January: 0
-  February: 1
-  December: 2
-  March: 3
-  November: 4
-  April: 5
-  October: 6
-  May: 7
-  September: 8
-  June: 9
-  July: 10
-  August: 11
-
-season_mappings:
-  spring: 0
-  winter: 1
-  summer: 2
-  fall: 3
-
-weathersit_mappings:
-  Heavy Rain: 0
-  Light Rain: 1
-  Mist: 2
-  Clear: 3
-
-holiday_mappings:
-  Yes: 0
-  No: 1
-
-workingday_mappings:
-  No: 0
+ever_married_var: ever_married
+ever_married_mappings:
   Yes: 1
+  No: 0
 
-hr_mappings:
-  4am: 0
-  3am: 1
-  5am: 2
-  2am: 3
-  1am: 4
-  12am: 5
-  6am: 6
-  11pm: 7
-  10pm: 8
-  10am: 9
-  9pm: 10
-  11am: 11
-  7am: 12
-  9am: 13
-  8pm: 14
-  2pm: 15
-  1pm: 16
-  12pm: 17
-  3pm: 18
-  4pm: 19
-  7pm: 20
-  8am: 21
-  6pm: 22
-  5pm: 23
+work_type_var: work_type
+work_type_mappings:
+  Private: 0
+  Self-employed: 1
+  Govt_job: 2
+  children: 3
+  Never_worked: 4
 
+Residence_type_var: Residence_type
+Residence_type_mappings:
+  Urban: 0
+  Rural: 1
+
+avg_glucose_level_var: avg_glucose_level
+bmi_var: bmi
+
+smoking_status_var: smoking_status
+smoking_status_mappings:
+  formerly smoked: 0
+  never smoked: 1
+  smokes: 2
+  Unknown: 3
   
 # Set train/test split
 test_size: 0.20

@@ -1,5 +1,6 @@
 import sys
 from pathlib import Path
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -9,47 +10,60 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 
 from stroke_detection_model.config.core import config
-from stroke_detection_model.processing.features import WeekdayImputer, WeathersitImputer
+from stroke_detection_model.processing.features import (
+    BmiImputer,
+    WorkTypeOneHotEncoder,
+    ResidenceTypeOneHotEncoder,
+)
+from stroke_detection_model.processing.features import SmokingStatusTypeOneHotEncoder
 from stroke_detection_model.processing.features import Mapper
-from stroke_detection_model.processing.features import OutlierHandler, WeekdayOneHotEncoder
 
-bikeshare_pipe = Pipeline([
-
-    ######### Imputation ###########
-    ('weekday_imputation', WeekdayImputer(variable = config.model_config.weekday_var, 
-                                          date_var= config.model_config.date_var)),
-    ('weathersit_imputation', WeathersitImputer(variable = config.model_config.weathersit_var)),
-    
-    ######### Mapper ###########
-    ('map_yr', Mapper(variable = config.model_config.yr_var, mappings = config.model_config.yr_mappings)),
-    
-    ('map_mnth', Mapper(variable = config.model_config.mnth_var, mappings = config.model_config.mnth_mappings)),
-    
-    ('map_season', Mapper(variable = config.model_config.season_var, mappings = config.model_config.season_mappings)),
-    
-    ('map_weathersit', Mapper(variable = config.model_config.weathersit_var, mappings = config.model_config.weathersit_mappings)),
-    
-    ('map_holiday', Mapper(variable = config.model_config.holiday_var, mappings = config.model_config.holiday_mappings)),
-    
-    ('map_workingday', Mapper(variable = config.model_config.workingday_var, mappings = config.model_config.workingday_mappings)),
-    
-    ('map_hr', Mapper(variable = config.model_config.hr_var, mappings = config.model_config.hr_mappings)),
-    
-    ######## Handle outliers ########
-    ('handle_outliers_temp', OutlierHandler(variable = config.model_config.temp_var)),
-    ('handle_outliers_atemp', OutlierHandler(variable = config.model_config.atemp_var)),
-    ('handle_outliers_hum', OutlierHandler(variable = config.model_config.hum_var)),
-    ('handle_outliers_windspeed', OutlierHandler(variable = config.model_config.windspeed_var)),
-
-    ######## One-hot encoding ########
-    ('encode_weekday', WeekdayOneHotEncoder(variable = config.model_config.weekday_var)),
-
-    # Scale features
-    ('scaler', StandardScaler()),
-    
-    # Regressor
-    ('model_rf', RandomForestRegressor(n_estimators = config.model_config.n_estimators, 
-                                       max_depth = config.model_config.max_depth,
-                                      random_state = config.model_config.random_state))
-    
-    ])
+stroke_detection_pipe = Pipeline(
+    [
+        ######### Imputation ###########
+        ("bmi_imputation", BmiImputer(variables=config.model_config.bmi_var)),
+        ######### Mapper ###########
+        (
+            "map_gender",
+            Mapper(
+                variables=config.model_config.gender_var,
+                mappings=config.model_config.gender_mappings,
+            ),
+        ),
+        (
+            "map_ever_married",
+            Mapper(
+                variables=config.model_config.ever_married_var,
+                mappings=config.model_config.ever_married_mappings,
+            ),
+        ),
+        ######## Handle outliers ########
+        # NA
+        ######## One-hot encoding ########
+        (
+            "encode_work_type",
+            WorkTypeOneHotEncoder(variables=config.model_config.work_type_var),
+        ),
+        (
+            "encode_Residence_type",
+            ResidenceTypeOneHotEncoder(variables=config.model_config.Residence_type_var),
+        ),
+        (
+            "encode_smoking_status",
+            SmokingStatusTypeOneHotEncoder(
+                variables=config.model_config.smoking_status_var
+            ),
+        ),
+        # Scale features
+        ("scaler", StandardScaler()),
+        # Regressor
+        (
+            "model_rf",
+            RandomForestRegressor(
+                n_estimators=config.model_config.n_estimators,
+                max_depth=config.model_config.max_depth,
+                random_state=config.model_config.random_state,
+            ),
+        ),
+    ]
+)

@@ -2,3 +2,5 @@
 
 # testing requirements
 pytest>=7.2.0,<8.0.0
+black>=24.2.0,<28.0.0
+pylint>=3.1.0,<8.0.0

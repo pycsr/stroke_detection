@@ -1,8 +1,10 @@
 """
 Note: These tests will fail if you have not first trained the model.
 """
+
 import sys
 from pathlib import Path
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
@@ -18,7 +20,7 @@ def test_make_prediction(sample_input_data):
     expected_num_of_predictions = 3476
 
     # When
-    result = make_prediction(input_data = sample_input_data[0])
+    result = make_prediction(input_data=sample_input_data[0])
 
     # Then
     predictions = result.get("predictions")
@@ -26,7 +28,7 @@ def test_make_prediction(sample_input_data):
     assert isinstance(predictions[0], np.float64)
     assert result.get("errors") is None
     assert len(predictions) == expected_num_of_predictions
-    
+
     _predictions = list(predictions)
     y_true = sample_input_data[1]
 

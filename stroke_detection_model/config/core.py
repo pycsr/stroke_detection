@@ -1,13 +1,12 @@
 # Path setup, and access the config.yml file, datasets folder & trained models
-import sys
+import sys,os
 from pathlib import Path
+
 file = Path(__file__).resolve()
 parent, root = file.parent, file.parents[1]
 sys.path.append(str(root))
 
-from pathlib import Path
 from typing import Dict, List
-
 from pydantic import BaseModel
 from strictyaml import YAML, load
 
@@ -15,9 +14,10 @@ import stroke_detection_model
 
 # Project Directories
 PACKAGE_ROOT = Path(stroke_detection_model.__file__).resolve().parent
+# print(PACKAGE_ROOT)
 ROOT = PACKAGE_ROOT.parent
 CONFIG_FILE_PATH = PACKAGE_ROOT / "config.yml"
-#print(CONFIG_FILE_PATH)
+# print(CONFIG_FILE_PATH)
 
 DATASET_DIR = PACKAGE_ROOT / "datasets"
 TRAINED_MODEL_DIR = PACKAGE_ROOT / "trained_models"
@@ -40,29 +40,36 @@ class ModelConfig(BaseModel):
     training and feature engineering.
     """
 
-    target: int
+    target: str
     features: List[str]
     unused_fields: List[str]
-    
-    gender: str
-    age: float
-    hypertension: int
-    heart_disease: int
-    ever_married: str
-    work_type: str
-    Residence_type: str
-    avg_glucose_level: float
-    bmi: float
-    smoking_status: str
-    stroke: int
-        
+
+    gender_var: str
     gender_mappings: Dict[str, int]
-    ever_married_mappings: Dict[str, int]
+
+    age_var: str
+
+    hypertension_var: str
+
+    heart_disease_var: str
+
+    ever_married_var: str
+    ever_married_mappings: Dict[str,int]
+
+    work_type_var: str
     work_type_mappings: Dict[str, int]
+
+    Residence_type_var: str
     Residence_type_mappings: Dict[str, int]
-    smoking_status_mappings: Dict[str, int]
+
+    avg_glucose_level_var: str
+
+    bmi_var: str
     
-    test_size:float
+    smoking_status_var: str
+    smoking_status_mappings: Dict[str, int]
+
+    test_size: float
     random_state: int
     n_estimators: int
     max_depth: int
@@ -77,10 +84,10 @@ class Config(BaseModel):
 
 def find_config_file() -> Path:
     """Locate the configuration file."""
-    
+
     if CONFIG_FILE_PATH.is_file():
         return CONFIG_FILE_PATH
-    
+
     raise Exception(f"Config not found at {CONFIG_FILE_PATH!r}")
 
 
@@ -94,7 +101,7 @@ def fetch_config_from_yaml(cfg_path: Path = None) -> YAML:
         with open(cfg_path, "r") as conf_file:
             parsed_config = load(conf_file.read())
             return parsed_config
-        
+
     raise OSError(f"Did not find config file at path: {cfg_path}")
 
 
@@ -102,11 +109,11 @@ def create_and_validate_config(parsed_config: YAML = None) -> Config:
     """Run validation on config values."""
     if parsed_config is None:
         parsed_config = fetch_config_from_yaml()
-
+    
     # specify the data attribute from the strictyaml YAML type.
     _config = Config(
-        app_config = AppConfig(**parsed_config.data),
-        model_config = ModelConfig(**parsed_config.data),
+        app_config=AppConfig(**parsed_config.data),
+        model_config =ModelConfig(**parsed_config.data),
     )
 
     return _config
