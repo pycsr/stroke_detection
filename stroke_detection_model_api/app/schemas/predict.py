@@ -20,19 +20,15 @@ class MultipleDataInputs(BaseModel):
             "example": {
                 "inputs": [
                     {
-                        "dteday": "2012-11-05",  # datetime.datetime.strptime("2012-11-05", "%Y-%m-%d"),
-                        "season": "winter",
-                        "hr": "6am",
-                        "holiday": "No",
-                        "weekday": "Mon",
-                        "workingday": "Yes",
-                        "weathersit": "Mist",
-                        "temp": 6.10,
-                        "atemp": 3.0014,
-                        "hum": 19.0012,
-                        "windspeed": 19.0012,
-                        "yr": 2012,
-                        "mnth": "November",
+                        "gender": "Male",
+                        "age": 38.5,
+                        "hypertension": 0,
+                        "heart_disease": 1,
+                        "ever_married": "Yes",
+                        "work_type": "Private",
+                        "Residence_type": "Urban",
+                        "avg_glucose_level": 228.69,
+                        "bmi": 36.6,
                     }
                 ]
             }

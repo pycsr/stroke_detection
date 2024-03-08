@@ -7,15 +7,16 @@ sys.path.append(str(root))
 
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import RandomForestRegressor
+from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
 
 from stroke_detection_model.config.core import config
 from stroke_detection_model.processing.features import (
     BmiImputer,
     WorkTypeOneHotEncoder,
     ResidenceTypeOneHotEncoder,
+    SmokingStatusTypeOneHotEncoder,
 )
-from stroke_detection_model.processing.features import SmokingStatusTypeOneHotEncoder
 from stroke_detection_model.processing.features import Mapper
 
 stroke_detection_pipe = Pipeline(
@@ -46,7 +47,9 @@ stroke_detection_pipe = Pipeline(
         ),
         (
             "encode_Residence_type",
-            ResidenceTypeOneHotEncoder(variables=config.model_config.Residence_type_var),
+            ResidenceTypeOneHotEncoder(
+                variables=config.model_config.Residence_type_var
+            ),
         ),
         (
             "encode_smoking_status",
@@ -59,7 +62,7 @@ stroke_detection_pipe = Pipeline(
         # Regressor
         (
             "model_rf",
-            RandomForestRegressor(
+            RandomForestClassifier(
                 n_estimators=config.model_config.n_estimators,
                 max_depth=config.model_config.max_depth,
                 random_state=config.model_config.random_state,
@@ -67,3 +70,10 @@ stroke_detection_pipe = Pipeline(
         ),
     ]
 )
+# for xgboost
+# XGBClassifier(
+#     objective='binary:logistic',
+#     n_estimators=config.model_config.n_estimators,
+#     max_depth=config.model_config.max_depth,
+#     random_state=config.model_config.random_state,
+# ),

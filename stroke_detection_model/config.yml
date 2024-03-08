@@ -78,4 +78,4 @@ random_state: 42
 
 # Alogrithm parameters
 n_estimators: 100
-max_depth: 10
+max_depth: 5

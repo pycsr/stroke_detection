@@ -8,8 +8,8 @@ from setuptools import find_packages, setup
 # Package meta-data.
 NAME = "stroke_detection_model"
 DESCRIPTION = "Stroke detection dataset regression model package "
-EMAIL = "------"
-AUTHOR = "----------"
+EMAIL = "soni.pankajkumar@gmail.com"
+AUTHOR = "---------Pankaj Soni (IISc_Cohort-2)"
 REQUIRES_PYTHON = ">=3.7.0"
 
 

@@ -1,5 +1,5 @@
 # Path setup, and access the config.yml file, datasets folder & trained models
-import sys,os
+import sys, os
 from pathlib import Path
 
 file = Path(__file__).resolve()
@@ -54,7 +54,7 @@ class ModelConfig(BaseModel):
     heart_disease_var: str
 
     ever_married_var: str
-    ever_married_mappings: Dict[str,int]
+    ever_married_mappings: Dict[str, int]
 
     work_type_var: str
     work_type_mappings: Dict[str, int]
@@ -65,7 +65,7 @@ class ModelConfig(BaseModel):
     avg_glucose_level_var: str
 
     bmi_var: str
-    
+
     smoking_status_var: str
     smoking_status_mappings: Dict[str, int]
 
@@ -109,11 +109,11 @@ def create_and_validate_config(parsed_config: YAML = None) -> Config:
     """Run validation on config values."""
     if parsed_config is None:
         parsed_config = fetch_config_from_yaml()
-    
+
     # specify the data attribute from the strictyaml YAML type.
     _config = Config(
         app_config=AppConfig(**parsed_config.data),
-        model_config =ModelConfig(**parsed_config.data),
+        model_config=ModelConfig(**parsed_config.data),
     )
 
     return _config

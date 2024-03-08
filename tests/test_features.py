@@ -12,76 +12,77 @@ sys.path.append(str(root))
 import numpy as np
 from stroke_detection_model.config.core import config
 from stroke_detection_model.processing.features import (
-    WeekdayImputer,
-    WeathersitImputer,
+    BmiImputer,
     Mapper,
-    OutlierHandler,
-    WeekdayOneHotEncoder,
+    WorkTypeOneHotEncoder,
+    ResidenceTypeOneHotEncoder,
+    SmokingStatusTypeOneHotEncoder,
 )
 
 
-def test_weekday_variable_imputer(sample_input_data):
+def test_bmi_variable_imputer(sample_input_data):
     # Given
-    imputer = WeekdayImputer(
-        variable=config.model_config.weekday_var, date_var=config.model_config.date_var
-    )
-    assert np.isnan(sample_input_data[0].loc[7046, "weekday"])
+    imputer = BmiImputer(variables=config.model_config.bmi_var)
+    print(sample_input_data[0].loc[19, "bmi"])
+    assert np.isnan(sample_input_data[0].loc[19, "bmi"])
 
     # When
     subject = imputer.fit(sample_input_data[0]).transform(sample_input_data[0])
 
     # Then
-    assert subject.loc[7046, "weekday"] == "Wed"
+    assert subject.loc[19, "bmi"].round(2) == 28.66
 
 
-def test_weathersit_variable_imputer(sample_input_data):
-    # Given
-    imputer = WeathersitImputer(variable=config.model_config.weathersit_var)
-    assert np.isnan(sample_input_data[0].loc[7046, "weathersit"])
-
-    # When
-    subject = imputer.fit(sample_input_data[0]).transform(sample_input_data[0])
-
-    # Then
-    assert subject.loc[7046, "weathersit"] == "Clear"
-
-
-def test_season_variable_mapper(sample_input_data):
+def test_gender_variable_mapper(sample_input_data):
     # Given
     mapper = Mapper(
-        variable=config.model_config.season_var,
-        mappings=config.model_config.season_mappings,
+        variables=config.model_config.gender_var,
+        mappings=config.model_config.gender_mappings,
     )
-    assert sample_input_data[0].loc[8688, "season"] == "summer"
+    assert sample_input_data[0].loc[19, "gender"] == "Male"
 
     # When
     subject = mapper.fit(sample_input_data[0]).transform(sample_input_data[0])
 
     # Then
-    assert subject.loc[8688, "season"] == 2
+    assert subject.loc[19, "gender"] == 0
 
 
-def test_windspeed_variable_outlierhandler(sample_input_data):
+def test_worktype_variable_encoder(sample_input_data):
     # Given
-    encoder = OutlierHandler(variable=config.model_config.windspeed_var)
-    q1, q3 = np.percentile(sample_input_data[0]["windspeed"], q=[25, 75])
-    iqr = q3 - q1
-    assert sample_input_data[0].loc[5813, "windspeed"] > q3 + (1.5 * iqr)
+    encoder = WorkTypeOneHotEncoder(variables=config.model_config.work_type_var)
+    assert sample_input_data[0].loc[19, "work_type"] == "Govt_job"
 
     # When
     subject = encoder.fit(sample_input_data[0]).transform(sample_input_data[0])
 
     # Then
-    assert subject.loc[5813, "windspeed"] <= q3 + (1.5 * iqr)
+    assert subject.loc[19, "work_type_Govt_job"] == 1.0
 
 
-def test_weekday_variable_encoder(sample_input_data):
+def test_residence_variable_encoder(sample_input_data):
     # Given
-    encoder = WeekdayOneHotEncoder(variable=config.model_config.weekday_var)
-    assert sample_input_data[0].loc[8688, "weekday"] == "Sun"
+    encoder = ResidenceTypeOneHotEncoder(
+        variables=config.model_config.Residence_type_var
+    )
+    assert sample_input_data[0].loc[19, "Residence_type"] == "Urban"
 
     # When
     subject = encoder.fit(sample_input_data[0]).transform(sample_input_data[0])
 
     # Then
-    assert subject.loc[8688, "weekday_Sun"] == 1.0
+    assert subject.loc[19, "Residence_type_Urban"] == 1.0
+
+
+def test_smoking_variable_encoder(sample_input_data):
+    # Given
+    encoder = SmokingStatusTypeOneHotEncoder(
+        variables=config.model_config.smoking_status_var
+    )
+    assert sample_input_data[0].loc[19, "smoking_status"] == "Unknown"
+
+    # When
+    subject = encoder.fit(sample_input_data[0]).transform(sample_input_data[0])
+
+    # Then
+    assert subject.loc[19, "smoking_status_Unknown"] == 1.0

@@ -56,7 +56,7 @@ class Mapper(BaseEstimator, TransformerMixin):
         # numeric_columns = X.select_dtypes(include=[np.number]).columns
         # print((X[numeric_columns].isna() | np.isinf(X[numeric_columns])).sum())
         X[self.variables] = X[self.variables].map(self.mappings).astype(int)
-        # print("Mapper.transform")
+
         return X
 
 
@@ -89,7 +89,7 @@ class WorkTypeOneHotEncoder(BaseEstimator, TransformerMixin):
         # Append encoded weekday features to X
         X[self.encoded_features_names] = encoded_work_type
 
-        # drop 'weekday' column after encoding
+        # drop 'WorkType' column after encoding
         X.drop(self.variables, axis=1, inplace=True)
 
         return X
@@ -124,7 +124,7 @@ class ResidenceTypeOneHotEncoder(BaseEstimator, TransformerMixin):
         # Append encoded weekday features to X
         X[self.encoded_features_names] = encoded_Residence_type
 
-        # drop 'weekday' column after encoding
+        # drop 'ResidenceType' column after encoding
         X.drop(self.variables, axis=1, inplace=True)
 
         return X
@@ -159,7 +159,7 @@ class SmokingStatusTypeOneHotEncoder(BaseEstimator, TransformerMixin):
         # Append encoded weekday features to X
         X[self.encoded_features_names] = encoded_smoking_status
 
-        # drop 'weekday' column after encoding
+        # drop 'smokingstatus' column after encoding
         X.drop(self.variables, axis=1, inplace=True)
 
         return X

@@ -20,6 +20,7 @@ from stroke_detection_model.config.core import DATASET_DIR, TRAINED_MODEL_DIR, c
 
 # Extract year and month from the date column and create two another columns
 
+
 def get_year_and_month(dataframe: pd.DataFrame, date_var: str):
 
     df = dataframe.copy()
@@ -36,13 +37,12 @@ def get_year_and_month(dataframe: pd.DataFrame, date_var: str):
 
 def pre_pipeline_preparation(*, data_frame: pd.DataFrame) -> pd.DataFrame:
 
-    data_frame = data_frame#get_year_and_month(dataframe = data_frame, date_var = config.model_config.date_var)
+    data_frame = data_frame  # get_year_and_month(dataframe = data_frame, date_var = config.model_config.date_var)
 
     # # Drop unnecessary fields
-    # for field in config.model_config.unused_fields:
-    #     if field in data_frame.columns:
-    #         data_frame.drop(labels = field, axis=1, inplace=True)
-
+    for field in config.model_config.unused_fields:
+        if field in data_frame.columns:
+            data_frame.drop(labels=field, axis=1, inplace=True)
     return data_frame
 
 
