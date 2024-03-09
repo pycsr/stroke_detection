@@ -1,7 +1,7 @@
 # pull python base image
 FROM python:3.10
 # copy application files
-ADD /stroke_detection_model_api /stroke_detection_model_api/
+COPY /stroke_detection_model_api /stroke_detection_model_api/
 # specify working directory
 WORKDIR /stroke_detection_model_api
 # update pip
