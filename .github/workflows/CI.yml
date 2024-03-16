@@ -60,6 +60,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      - name: Install black
+        run: pip install black
       - name: Run black module
         run: black ./
 
@@ -75,6 +77,8 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      - name: Install pylint
+        run: pip install pylint
       - name: Run pylint module
         run: pylint ./
 
