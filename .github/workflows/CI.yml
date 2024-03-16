@@ -63,7 +63,7 @@ jobs:
         run: black ./
 
   pylint:
-    needs: needs: [train,test,black]
+    needs: [train,test,black]
     name: pylint
     runs-on: ubuntu-latest
     strategy:
