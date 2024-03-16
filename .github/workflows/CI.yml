@@ -6,7 +6,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  black:
+  - name: To reformat the code for better readability
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Run black module
+      run: black ./
+
+  pylint:
+  needs: black
+  - name: To find out no error in liniting
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Run pylint module
+      run: pylint ./  
+  
   train:
+    needs: [black,pylint]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -27,7 +57,7 @@ jobs:
         retention-days: 1
 
   test:
-    needs: train
+    needs: [black,pylint,train]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -47,7 +77,7 @@ jobs:
       run: pytest
 
   build:
-    needs: [train, test]
+    needs: [black,pylint,train,train, test]
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -72,7 +102,7 @@ jobs:
         retention-days: 1
   
   push-image:
-    needs: [train, test, build]
+    needs: [black,pylint,train,train, test, build]
     runs-on: ubuntu-latest
     steps:
     - name: Repo Checkout
