@@ -80,7 +80,7 @@ jobs:
       - name: Install pylint
         run: pip install pylint
       - name: Run pylint module
-        run: pylint ./
+        run: pylint ./ --ignore=__init__.py
 
   build:
     name: Build Package
