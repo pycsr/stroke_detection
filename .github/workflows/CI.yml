@@ -6,37 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  black:
-    name: To reformat the code for better readability
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Run black module
-        run: black ./
-
-  pylint:
-    needs: black
-    name: To find out no error in linting
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - name: Run pylint module
-        run: pylint ./
-  
   train:
-    needs: [black, pylint]
     name: Train Model
     runs-on: ubuntu-latest
     strategy:
@@ -56,9 +26,8 @@ jobs:
           name: my-trained-pipeline
           path: stroke_detection_model/trained_models/*.pkl
           retention-days: 1
-
   test:
-    needs: [black, pylint, train]
+    needs: train
     name: Test Model
     runs-on: ubuntu-latest
     strategy:
@@ -77,9 +46,39 @@ jobs:
         run: pip install -r requirements/test_requirements.txt
       - name: Test with pytest
         run: pytest
+        
+  black:
+    needs: [train,test]
+    name: black
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Run black module
+        run: black ./
 
+  pylint:
+    needs: needs: [train,test,black]
+    name: pylint
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Run pylint module
+        run: pylint ./
+        
   build:
-    needs: [black, pylint, train, test]
+    needs: [train, test,black, pylint]
     name: Build Package
     runs-on: ubuntu-latest
     strategy:
@@ -105,7 +104,7 @@ jobs:
           retention-days: 1
   
   push-image:
-    needs: [black, pylint, train, test, build]
+    needs: [train, test,black, pylint, build]
     name: Push Docker Image
     runs-on: ubuntu-latest
     steps:
